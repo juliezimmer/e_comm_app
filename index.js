@@ -6,6 +6,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true}));
 
 // Route Handler //
+// handles account creation //
 app.get('/', (req, res) => {
    // greeting to user //
    res.send(`
