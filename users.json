@@ -1,0 +1,12 @@
+[
+  {
+    "email": "test@test.com",
+    "password": "qweqwe",
+    "confirmPassword": "qweqwe"
+  },
+  {
+    "email": "j@gmail.com",
+    "password": "qwerty",
+    "id": "3b080c3f"
+  }
+]
