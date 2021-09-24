@@ -1,4 +1,5 @@
 const fs = require('fs');
+const crypto = require('crypto');
 
 class UsersRepository {
    constructor (filename) { // filename is where the users are stored //
@@ -18,6 +19,7 @@ class UsersRepository {
    };
 
    async create (attrs) {
+      attrs.id = this.randomId();
       const records = await this.getAll();
       records.push(attrs);
 
@@ -30,6 +32,53 @@ class UsersRepository {
          JSON.stringify(records, null, 2)
       );
    }
+
+   randomId () {
+      return crypto.randomBytes(4).toString('hex');   
+   }
+
+   async getOne (id) {
+      // get all records out of users.json file //
+      const records = await this.getAll();
+      return records.find(record => record.id === id);
+   }
+
+   async delete(id) {
+      const records = await this.getAll();
+      const filteredRecords = records.filter(record => record.id !== id);
+      await this.writeAll(filteredRecords);
+   }
+
+   async update(id, attrs) {
+      const records = await this.getAll();
+      const record = records.find(record => record.id === id);
+      // check to see if matching record was found //
+      if(!record) {
+         throw new Error(`record with id of ${id} was not found`);
+      }
+      // update record that was found //
+      Object.assign(record, attrs);
+      // write records back to users.json //
+      await this.writeAll(records);
+   }
+
+   async getOneBy(filters) {
+      const records = await this.getAll();
+      // iterate through records //
+      for (let record of records){
+         // temprorary variable //
+         let found = true;
+         for (let key in filters) {
+            if (record[key] !== filters[key]) {
+               found = false;
+            }
+         }
+
+         if (found) {
+            return record;
+         }
+      }
+   }
 }
 
 
@@ -37,11 +86,12 @@ class UsersRepository {
 const test = async () => {
    const repo = new UsersRepository('users.json');
    
-   await repo.create({ email: 'test@test.com', password: 'password' });
-   
-   const users = await repo.getAll();
+   const user = await repo.getOneBy({ 
+      email: 'tom@test.com',
+      password: 'mypassword'
+   });
 
-   console.log(users);
+   console.log(user);
 };
 
 test();
