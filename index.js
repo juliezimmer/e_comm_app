@@ -12,7 +12,7 @@ app.use(cookieSession({
 
 // Route Handler //
 // handles account creation //
-app.get('/', (req, res) => {
+app.get('/signup', (req, res) => {
    // greeting to user //
    res.send(`
       <div>
@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 });
 
 // POST route handler //
-app.post('/', async (req, res) => {
+app.post('/signup', async (req, res) => {
    // destructure req.body //
    const { email, password, confirmPassword } = req.body;
    // create user - check email //
@@ -47,11 +47,42 @@ app.post('/', async (req, res) => {
    // store id of the user inside user's cookie //
    req.session.userId = user.id;
 
-
-
-
    // both validation checks have passed //
    res.send("Account created!");
+});
+
+app.get('/signout', (req, res) => {
+   req.session = null;
+   res.send('You are logged out');
+});
+
+app.get('/signin', (req, res) => {
+   res.send(`
+      <div>
+         <form method="POST"> 
+            <input name="email" placeholder="email">
+            <input name="password" placeholder="password">
+            <button>Sign In</button>
+         </form>
+      </div>
+   `);
+});
+
+app.post('/signin', async (req, res) => {
+   const { email, password } = req.body;
+   
+   const user = await usersRepo.getOneBy({ email }); 
+   if (!user) { //if no user found who had the email entered //
+      return res.send('Email not found');     
+   } 
+   // email found - verify pw //
+   if (user.password !== password){
+      return res.send('Invalid password');
+   }
+   // user is signed in //
+   req.session.userId = user.id;
+   res.send('You are signed in');
+
 });
 
 app.listen(3000, () => {
