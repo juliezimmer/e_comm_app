@@ -69,17 +69,21 @@ app.get('/signin', (req, res) => {
 });
 
 app.post('/signin', async (req, res) => {
+   // destructuring form data //
    const { email, password } = req.body;
    
+   // check for user email in db //
    const user = await usersRepo.getOneBy({ email }); 
-   if (!user) { //if no user found who had the email entered //
+   // if user with matching email NOT found:
+   if (!user) { 
       return res.send('Email not found');     
    } 
    // email found - verify pw //
    if (user.password !== password){
       return res.send('Invalid password');
-   }
-   // user is signed in //
+   } 
+   // if user gets past both checks, user is valid //
+   // use id stored inside of cookie // 
    req.session.userId = user.id;
    res.send('You are signed in');
 

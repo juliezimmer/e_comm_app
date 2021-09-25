@@ -1,8 +1,11 @@
 const fs = require('fs');
 const crypto = require('crypto');
+const util = require('util');
+
+const scrypt = util.promisify(crypto.scrypt);
 
 class UsersRepository {
-   constructor (filename) { // filename is where the users are stored //
+   constructor (filename) { // filename is where the users are stored - our db //
       if (!filename) {
          throw new Error('Filename required');
       }
@@ -16,17 +19,25 @@ class UsersRepository {
    
    async getAll(){
       return JSON.parse(await fs.promises.readFile(this.filename, {encoding: 'utf8'}));
-   };
+   }
 
    async create (attrs) {
       attrs.id = this.randomId();
+
+      const salt = crypto.randomBytes(8).toString('hex');
+      // hashes user's pw + salt combo //
+      const buf = await scrypt(attrs.password, salt, 64); 
       
       const records = await this.getAll();
-      records.push(attrs);
-
+      const record = {
+         ...attrs,
+         password: `${buf.toString('hex')}.${salt}`
+      }
+      records.push(record); 
+          
       await this.writeAll(records);
 
-      return attrs;
+      return record; // has hashed and salted password //
    }
 
    async writeAll(records) {

@@ -13,5 +13,15 @@
     "email": "fbf@gmail.com",
     "password": "pass12word",
     "id": "9c91329c"
+  },
+  {
+    "email": "tom@gmail.com",
+    "password": "pass123",
+    "id": "71ca88b0"
+  },
+  {
+    "email": "testing@testing.com",
+    "password": "2725386572c6e9a314bc058f9d5e2f57188ecd671f463884fc14ceb1c3ad901e4bec9ed74aa4dc0215084e9afaf56278b05ca48214ea339b1ac74fd967544f2b.7cec6d2d72b80dd7",
+    "id": "bf787827"
   }
 ]
