@@ -40,6 +40,18 @@ class UsersRepository {
       return record; // has hashed and salted password //
    }
 
+   async comparePasswords(saved, supplied){
+      // const result = saved.split('.');
+      // const hashed = result[0];
+      // const salt = result[1];
+      // more compact version: this splits the hashed pw from the db at the period and puts the two parts in an array //
+      const [hashed, salt] = saved.split('.');
+      const hashedSupplied = await scrypt(supplied, salt, 64);
+
+      // comparison of pws //
+      return hashed === hashedSupplied;
+   }
+
    async writeAll(records) {
       await fs.promises.writeFile(
          this.filename, 
