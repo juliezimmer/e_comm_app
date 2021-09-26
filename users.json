@@ -23,5 +23,10 @@
     "email": "testing@testing.com",
     "password": "2725386572c6e9a314bc058f9d5e2f57188ecd671f463884fc14ceb1c3ad901e4bec9ed74aa4dc0215084e9afaf56278b05ca48214ea339b1ac74fd967544f2b.7cec6d2d72b80dd7",
     "id": "bf787827"
+  },
+  {
+    "email": "c@umn.edu",
+    "password": "373120f1a1a940a3dcc08f8ce2bddcb7066535cc69415a9af701b94dfddd57f1429eefb6192e221fd29b3adfc83278b7f727f5e13c5fdbf8a5ea1db5425aba7e.72969fdd6c201c34",
+    "id": "1f27cbbd"
   }
 ]

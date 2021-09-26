@@ -46,10 +46,10 @@ class UsersRepository {
       // const salt = result[1];
       // more compact version: this splits the hashed pw from the db at the period and puts the two parts in an array //
       const [hashed, salt] = saved.split('.');
-      const hashedSupplied = await scrypt(supplied, salt, 64);
+      const hashedSuppliedBuffer = await scrypt(supplied, salt, 64);
 
       // comparison of pws //
-      return hashed === hashedSupplied;
+      return hashed === hashedSuppliedBuffer.toString('hex');
    }
 
    async writeAll(records) {
