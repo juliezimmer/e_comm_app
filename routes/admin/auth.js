@@ -1,10 +1,16 @@
-const express = require('express');
+const express = require ('express');
 const { check, validationResult, body } = require('express-validator');
 
-const usersRepo = require('../../repositories/users');
-const signupTemplate = require('../../views/admin/auth/signup');
-const signinTemplate = require('../../views/admin/auth/signin');
-const { requireEmail, requirePassword, requireConfirmPassword } = require('./validators');
+const usersRepo = require ('../../repositories/users');
+const signupTemplate = require ('../../views/admin/auth/signup');
+const signinTemplate = require ('../../views/admin/auth/signin');
+const { 
+   requireEmail, 
+   requirePassword, 
+   requireConfirmPassword, 
+   requireEmailExists, 
+   requireValidPasswordForUser 
+} = require('./validators');
 
 const router = express.Router();
 
@@ -14,7 +20,7 @@ router.get('/signup', (req, res) => {
 
 // POST route handler //
 router.post('/signup', 
-   [ requireEmail,  requirePassword, requireConfirmPassword ], 
+   [ requireEmail, requirePassword, requireConfirmPassword ], 
    async (req, res ) => {
       const errors = validationResult(req);
       
@@ -43,23 +49,17 @@ router.get('/signin', (req, res) => {
    res.send(signinTemplate());
 });
 
-router.post('/signin', async (req, res) => {
-   // destructuring form data //
-   const { email, password } = req.body;
+router.post('/signin', 
+   [requireEmailExists, requireValidPasswordForUser], 
+async (req, res) => {
+   const errors = validationResult(req);
+   console.log(errors);
+
+   const { email } = req.body;
    
    // check for user email in db //
    const user = await usersRepo.getOneBy({ email }); 
-   // if user with matching email NOT found:
-   if (!user) { 
-      return res.send('Email not found');     
-   } 
 
-   const validPassword = await usersRepo.comparePasswords(user.password, password);
-
-   // email found - verify pw //
-   if (!validPassword){
-      return res.send('Invalid password');
-   } 
    // if user gets past both checks, user is valid //
    // use id stored inside of cookie //  
    req.session.userId = user.id;
