@@ -6,6 +6,7 @@ const Repository = require('./repository');
 const scrypt = util.promisify(crypto.scrypt);
 
 class UsersRepository extends Repository {
+   
    async comparePasswords(saved, supplied){
       // saved -> pw saved in db. 'hashed.salt'
       // supplied -> pw provided by a user trying to signin
@@ -35,5 +36,6 @@ class UsersRepository extends Repository {
 
       return record; // has hashed and salted password //
    }   
-
-   module.exports = new UsersRepository('users.json'); 
+};
+   
+module.exports = new UsersRepository('users.json'); 
