@@ -16,12 +16,12 @@ module.exports = class Repository {
    }
 
    async create (attrs) {
-      // assign random id to the attrs object //
+      // assign random id to the attrs object as a property //
       attrs.id = this.randomId();
       // get all records //
       const records = await this.getAll();
       // add the new record just created //
-      records.push(attrs); // will have new id attached to it //
+      records.push(attrs); // will have new id as a property //
 
       await this.writeAll(records);
    }
