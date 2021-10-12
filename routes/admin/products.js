@@ -1,7 +1,7 @@
 const express = require('express');
-const { validationResult } = require('express-validator');
 const multer = require('multer');
 
+const { handleErrors } = require('./middlewares');
 const productsRepo = require('../../repositories/products');
 const productsNewTemplate = require('../../views/admin/products/new');
 const { requireTitle, requirePrice } = require('./validators');
@@ -25,19 +25,13 @@ router.post(
    '/admin/products/new', 
    upload.single('image'),
    [requireTitle, requirePrice], 
+   handleErrors(productsNewTemplate),
    async (req, res) => {
-      const errors = validationResult(req);
-      // checks to see if the errors object has any errors //
-      if(!errors.isEmpty()){
-         return res.send(productsNewTemplate({ errors }));
-      }
-      
       // has uploaded image raw data that is being converted to a string encoded with base64 //
       const image = req.file.buffer.toString('base64'); 
       
       // get access to title and price from req.body //
       const { title, price } = req.body;
-
       await productsRepo.create({ title, price, image }); 
 
       res.send('submitted');
